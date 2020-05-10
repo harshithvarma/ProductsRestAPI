@@ -31,8 +31,8 @@ type KeyProduct struct{}
 func (p *ProductHandler) AddProduct(rw http.ResponseWriter, r *http.Request) {
 	p.l.Println("Handle POST product")
 
-	prod := r.Context().Value(KeyProduct{}).(data.Product)
-	data.AddProduct(&prod)
+	prod := r.Context().Value(KeyProduct{}).(*data.Product)
+	data.AddProduct(prod)
 }
 
 func (p *ProductHandler) UpdateProduct(rw http.ResponseWriter, r *http.Request) {
@@ -42,8 +42,8 @@ func (p *ProductHandler) UpdateProduct(rw http.ResponseWriter, r *http.Request) 
 		http.Error(rw, "unable to convert id", http.StatusBadRequest)
 	}
 	p.l.Println("handle PUT product")
-	prod := r.Context().Value(KeyProduct{}).(data.Product)
-	err = data.UpdateProduct(id, &prod)
+	prod := r.Context().Value(KeyProduct{}).(*data.Product)
+	err = data.UpdateProduct(id, prod)
 	if err == data.ErrProductNotFound {
 		http.Error(rw, "product not found", http.StatusNotFound)
 	}
@@ -51,7 +51,7 @@ func (p *ProductHandler) UpdateProduct(rw http.ResponseWriter, r *http.Request) 
 
 func (p *ProductHandler) MiddlewareValidateProduct(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
-		prod := data.Product{}
+		prod := &data.Product{}
 		err := prod.FromJson(r.Body)
 		if err != nil {
 			p.l.Println("[ERROR] deserializing product", err)

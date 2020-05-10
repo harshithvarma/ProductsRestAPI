@@ -9,23 +9,30 @@ import (
 	"github.com/gorilla/mux"
 	"os/signal"
 	"time"
+	"github.com/nicholasjackson/env"
 )
+
+var bindAddress = env.String("BIND_ADDRESS", false, ":9090", "Bind address for the server")
 
 func main(){
 
+	env.Parse()
 	l:=log.New(os.Stdout,"product-api",log.LstdFlags)
 	s:=mux.NewRouter()
 	ph:=handlers.NewProductHandler(l)
 	getRouter:=s.Methods(http.MethodGet).Subrouter()
 	getRouter.HandleFunc("/",ph.GetProducts)
+
 	putRouter:=s.Methods(http.MethodPut).Subrouter()
 	putRouter.HandleFunc("/{id:[0-9]+}",ph.UpdateProduct)
+	putRouter.Use(ph.MiddlewareValidateProduct)
 	postRouter:=s.Methods(http.MethodPost).Subrouter()
 	postRouter.HandleFunc("/",ph.AddProduct)
+	postRouter.Use(ph.MiddlewareValidateProduct)
 
 
 	server:=http.Server{
-		Addr:              ":9090",
+		Addr:              *bindAddress,
 		Handler:           s,
 		TLSConfig:         nil,
 		ReadTimeout:       5*time.Second,
@@ -34,6 +41,8 @@ func main(){
 	}
 
 	go func(){
+
+
 		l.Println("Starting the server on port 9090")
 
 		err:=server.ListenAndServe()

@@ -7,15 +7,15 @@ import (
 )
 
 type Product struct {
-	ID          int
-	Name        string
-	Description string
-	price       int
+	ID          int		`json:"id"`
+	Name        string	`json:"name"`
+	Description string	`json:"description"`
+	Price       int		`json:"price"`
 }
 
 type ProductsList []*Product
 
-func (p *Product) ToJson(w io.Writer) error{
+func (p *ProductsList) ToJson(w io.Writer) error{
 	e:=json.NewEncoder(w)
 	return e.Encode(p)
 }
@@ -37,7 +37,7 @@ func UpdateProduct(id int, p *Product) error {
 	if err!=nil{
 		return err
 	}
-	p.ID=id
+
 	productsList[pos]=p
 	return nil
 }
@@ -62,18 +62,18 @@ var productsList = []*Product{
 		ID:          1,
 		Name:        "tea",
 		Description: "tea powder from imported from china",
-		price:       100,
+		Price:       100,
 	},
 	&Product{
 		ID:          2,
 		Name:        "coffee",
 		Description: "Made in ooty",
-		price:       200,
+		Price:       200,
 	},
 	&Product{
 		ID:          3,
 		Name:        "osmania biscuits",
 		Description: "Made in Hyderabad",
-		price:       300,
+		Price:       300,
 	},
 }
