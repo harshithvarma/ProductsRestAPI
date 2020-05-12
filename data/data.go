@@ -4,13 +4,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"github.com/go-playground/validator/v10"
 )
 
 type Product struct {
 	ID          int		`json:"id"`
-	Name        string	`json:"name"`
+	Name        string	`json:"name" validate:"required"`
 	Description string	`json:"description"`
-	Price       int		`json:"price"`
+	Price       int		`json:"price" validate:"required,gt=0"`
 }
 
 type ProductsList []*Product
@@ -24,6 +25,12 @@ func (p *Product) FromJson(r io.Reader) error{
 	e:=json.NewDecoder(r)
 	return e.Decode(p)
 }
+
+func(p *Product) Validate() error{
+	validate:=validator.New()
+	return validate.Struct(p)
+}
+
 func GetProductsList() ProductsList {
 	return productsList
 }

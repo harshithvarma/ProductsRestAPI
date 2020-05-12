@@ -3,6 +3,7 @@ package handlers
 import (
 	"ProductRestAPI/data"
 	"context"
+	"fmt"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
@@ -56,6 +57,13 @@ func (p *ProductHandler) MiddlewareValidateProduct(next http.Handler) http.Handl
 		if err != nil {
 			p.l.Println("[ERROR] deserializing product", err)
 			http.Error(rw, "Error reading product", http.StatusBadRequest)
+			return
+		}
+
+		err=prod.Validate()
+		if err!=nil{
+			p.l.Println("[ERROR] Validating product", err)
+			http.Error(rw, fmt.Sprintf("Error validating product: %s",err), http.StatusBadRequest)
 			return
 		}
 
