@@ -4,10 +4,8 @@ import (
 	"ProductRestAPI/data"
 	"context"
 	"fmt"
-	"github.com/gorilla/mux"
 	"log"
 	"net/http"
-	"strconv"
 )
 
 type ProductHandler struct {
@@ -18,37 +16,7 @@ func NewProductHandler(l *log.Logger) *ProductHandler {
 	return &ProductHandler{l}
 }
 
-func (p *ProductHandler) GetProducts(rw http.ResponseWriter, r *http.Request) {
-	p.l.Println("Handle GET products")
-	list := data.GetProductsList()
-	err := list.ToJson(rw)
-	if err != nil {
-		http.Error(rw, "unable to unmarshal to json", http.StatusInternalServerError)
-	}
-}
-
 type KeyProduct struct{}
-
-func (p *ProductHandler) AddProduct(rw http.ResponseWriter, r *http.Request) {
-	p.l.Println("Handle POST product")
-
-	prod := r.Context().Value(KeyProduct{}).(*data.Product)
-	data.AddProduct(prod)
-}
-
-func (p *ProductHandler) UpdateProduct(rw http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	id, err := strconv.Atoi(vars["id"])
-	if err != nil {
-		http.Error(rw, "unable to convert id", http.StatusBadRequest)
-	}
-	p.l.Println("handle PUT product")
-	prod := r.Context().Value(KeyProduct{}).(*data.Product)
-	err = data.UpdateProduct(id, prod)
-	if err == data.ErrProductNotFound {
-		http.Error(rw, "product not found", http.StatusNotFound)
-	}
-}
 
 func (p *ProductHandler) MiddlewareValidateProduct(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
