@@ -1,9 +1,7 @@
 package data
 
 import (
-	"encoding/json"
 	"fmt"
-	"io"
 	"github.com/go-playground/validator/v10"
 )
 
@@ -15,16 +13,6 @@ type Product struct {
 }
 
 type ProductsList []*Product
-
-func (p *ProductsList) ToJson(w io.Writer) error{
-	e:=json.NewEncoder(w)
-	return e.Encode(p)
-}
-
-func (p *Product) FromJson(r io.Reader) error{
-	e:=json.NewDecoder(r)
-	return e.Decode(p)
-}
 
 func(p *Product) Validate() error{
 	validate:=validator.New()
