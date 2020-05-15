@@ -23,14 +23,14 @@ import (
 )
 
 // A list of products returns in the response
-//swagger:response productResponse
+// swagger:response productsResponseWrapper
 type ProductsResponseWrapper struct{
 	// All products in the system
-	//in: body
-	body []data.Product
+	// in: body
+	Body []data.Product
 }
 
-// ProductHandles is a http.handler
+// ProductHandler is a http.handler
 type ProductHandler struct {
 	l *log.Logger
 }
