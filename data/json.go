@@ -5,14 +5,16 @@ import (
 	"io"
 )
 
-//ToJson serializes the given interface into a string based JSON format
-func (p *ProductsList) ToJson(w io.Writer) error{
-	e:=json.NewEncoder(w)
-	return e.Encode(p)
+// ToJSON serializes the given interface into a string based JSON format
+func ToJSON(i interface{}, w io.Writer) error {
+	e := json.NewEncoder(w)
+
+	return e.Encode(i)
 }
 
-//FromJson decodes the body in request to a product struct
-func (p *Product) FromJson(r io.Reader) error{
-	e:=json.NewDecoder(r)
-	return e.Decode(p)
+// FromJSON deserializes the object from JSON string
+// in an io.Reader to the given interface
+func FromJSON(i interface{}, r io.Reader) error {
+	d := json.NewDecoder(r)
+	return d.Decode(i)
 }
