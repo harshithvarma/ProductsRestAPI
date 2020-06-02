@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"ProductRestAPI/data"
+	"ProductRestAPI/product-api/data"
 	"net/http"
 )
 

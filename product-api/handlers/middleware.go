@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"ProductRestAPI/data"
+	"ProductRestAPI/product-api/data"
 	"golang.org/x/net/context"
 	"net/http"
 )

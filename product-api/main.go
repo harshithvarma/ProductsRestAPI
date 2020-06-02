@@ -1,17 +1,18 @@
 package main
 
 import (
-	"ProductRestAPI/data"
-	"ProductRestAPI/handlers"
+	"ProductRestAPI/product-api/data"
+	"ProductRestAPI/product-api/handlers"
 	"context"
+	"github.com/go-openapi/runtime/middleware"
+	gohandlers "github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
+	"github.com/nicholasjackson/env"
 	"log"
 	"net/http"
 	"os"
-	"github.com/gorilla/mux"
 	"os/signal"
 	"time"
-	"github.com/go-openapi/runtime/middleware"
-	"github.com/nicholasjackson/env"
 )
 
 var bindAddress = env.String("BIND_ADDRESS", false, ":9090", "Bind address for the server")
@@ -52,10 +53,12 @@ func main() {
 	getR.Handle("/docs", sh)
 	getR.Handle("/swagger.yaml", http.FileServer(http.Dir("./")))
 
+	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"http://localhost:3000"}))
+
 	// create a new server
 	s := http.Server{
 		Addr:         *bindAddress,      // configure the bind address
-		Handler:      sm,                // set the default handler
+		Handler:      ch(sm),                // set the default handler
 		ErrorLog:     l,                 // set the logger for the server
 		ReadTimeout:  5 * time.Second,   // max time to read request from the client
 		WriteTimeout: 10 * time.Second,  // max time to write response to the client

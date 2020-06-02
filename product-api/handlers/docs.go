@@ -15,7 +15,7 @@
 // swagger:meta
 package handlers
 
-import "ProductRestAPI/data"
+import "ProductRestAPI/product-api/data"
 
 //
 // NOTE: Types defined here are purely for documentation purposes
